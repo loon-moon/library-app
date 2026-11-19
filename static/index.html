@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LibSpace — моя библиотека</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="app-page">
+  <header class="site-header">
+    <a class="logo" href="/" aria-label="LibSpace — на главную">
+      <svg class="logo-icon" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+        <path d="M32 13C25 7 14 6 7 9v41c7-3 18-2 25 4 7-6 18-7 25-4V9c-7-3-18-2-25 4Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+        <path d="M32 13v41" fill="none" stroke="currentColor" stroke-width="2.2"/>
+        <path d="M32 4l3.2 5.2L32 14.4l-3.2-5.2L32 4Z" fill="currentColor"/>
+      </svg>
+    </a>
+    <a class="brand" href="/">LibSpace</a>
+    <div class="header-user">
+      <span class="user-name" id="user-name"></span>
+      <button class="btn btn-ghost btn-small" id="logout-btn" type="button">Выйти</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="toolbar" aria-label="Поиск и фильтры">
+      <label class="search" for="search-input">
+        <span class="sr-only">Поиск по названию или автору</span>
+        <input id="search-input" type="search" placeholder="Поиск..." autocomplete="off">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+          <path d="m16 16 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </label>
+
+      <label class="select-wrap" for="genre-filter">
+        <span class="sr-only">Фильтр по жанру</span>
+        <select id="genre-filter">
+          <option value="">Жанр</option>
+        </select>
+      </label>
+
+      <label class="select-wrap" for="status-filter">
+        <span class="sr-only">Фильтр по статусу</span>
+        <select id="status-filter">
+          <option value="">Статус</option>
+          <option value="want">Хочу</option>
+          <option value="reading">Читаю</option>
+          <option value="read">Прочитано</option>
+        </select>
+      </label>
+
+      <label class="select-wrap" for="sort-filter">
+        <span class="sr-only">Сортировка</span>
+        <select id="sort-filter">
+          <option value="created_at:desc">Сначала новые</option>
+          <option value="created_at:asc">Сначала старые</option>
+          <option value="title:asc">По названию</option>
+          <option value="rating:desc">По оценке</option>
+        </select>
+      </label>
+    </section>
+
+    <div id="global-error" class="alert error hidden" role="alert"></div>
+
+    <section class="section">
+      <h2 class="section-title">Рекомендуем</h2>
+      <div id="recommended-grid" class="book-grid" aria-live="polite"></div>
+      <div id="recommended-empty" class="state hidden">Пусто</div>
+      <div class="center">
+        <button id="recommended-more" class="btn btn-gold hidden" type="button">Показать ещё</button>
+      </div>
+    </section>
+
+    <div class="content-layout">
+      <section class="section section-grow">
+        <h2 class="section-title">Мои книги</h2>
+        <div id="books-grid" class="book-grid" aria-live="polite"></div>
+        <div id="loading" class="state">Загрузка...</div>
+        <div id="empty" class="state hidden">Пусто</div>
+        <div class="center">
+          <button id="books-more" class="btn btn-gold hidden" type="button">Показать ещё</button>
+        </div>
+      </section>
+
+      <aside class="stats-card" aria-label="Статистика библиотеки">
+        <h3 class="stats-title">Статистика</h3>
+        <dl class="stats-list">
+          <div class="stats-row"><dt>Прочитано:</dt><dd id="stat-read">0</dd></div>
+          <div class="stats-row"><dt>В процессе:</dt><dd id="stat-reading">0</dd></div>
+          <div class="stats-row"><dt>Желаемые:</dt><dd id="stat-want">0</dd></div>
+          <div class="stats-row"><dt>Избранное:</dt><dd id="stat-favorite">0</dd></div>
+        </dl>
+        <div class="genre-stats">
+          <h4 class="genre-stats-title">По жанрам</h4>
+          <ul id="genre-stats" class="genre-stats-list"></ul>
+        </div>
+        <button id="add-book-btn" class="btn btn-gold btn-block" type="button">Добавить книгу</button>
+      </aside>
+    </div>
+  </main>
+
+  <dialog id="book-dialog" class="dialog">
+    <form id="book-form" class="dialog-form" novalidate>
+      <h2 id="dialog-title" class="dialog-title">Новая книга</h2>
+      <div id="form-error" class="alert error hidden" role="alert"></div>
+      <input type="hidden" id="book-id">
+
+      <div class="form-grid">
+        <label class="field" for="book-title">
+          <span class="field-label">Название</span>
+          <input id="book-title" type="text" maxlength="255" required autocomplete="off">
+        </label>
+        <label class="field" for="book-author">
+          <span class="field-label">Автор</span>
+          <input id="book-author" type="text" maxlength="255" required autocomplete="off">
+        </label>
+        <label class="field" for="book-genre">
+          <span class="field-label">Жанр</span>
+          <select id="book-genre"><option value="">Без жанра</option></select>
+        </label>
+        <label class="field" for="book-publisher">
+          <span class="field-label">Издательство</span>
+          <select id="book-publisher"><option value="">Без издательства</option></select>
+        </label>
+        <label class="field" for="book-shelf">
+          <span class="field-label">Полка</span>
+          <select id="book-shelf"><option value="">Без полки</option></select>
+        </label>
+        <label class="field" for="book-status">
+          <span class="field-label">Статус</span>
+          <select id="book-status">
+            <option value="want">Хочу прочитать</option>
+            <option value="reading">Читаю</option>
+            <option value="read">Прочитано</option>
+          </select>
+        </label>
+        <label class="field" for="book-rating">
+          <span class="field-label">Оценка</span>
+          <select id="book-rating">
+            <option value="">Без оценки</option>
+            <option value="1">1 — очень плохо</option>
+            <option value="2">2 — плохо</option>
+            <option value="3">3 — нормально</option>
+            <option value="4">4 — хорошо</option>
+            <option value="5">5 — отлично</option>
+          </select>
+        </label>
+        <label class="field" for="book-pages">
+          <span class="field-label">Страниц</span>
+          <input id="book-pages" type="number" min="1" max="100000" inputmode="numeric">
+        </label>
+        <label class="checkbox-field" for="book-favorite">
+          <input id="book-favorite" type="checkbox">
+          <span>Добавить в избранное</span>
+        </label>
+      </div>
+
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-ghost" id="cancel-btn">Отмена</button>
+        <button type="button" class="btn btn-danger hidden" id="delete-btn">Удалить</button>
+        <button type="submit" class="btn btn-gold" id="save-btn">Сохранить</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

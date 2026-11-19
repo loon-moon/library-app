@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LibSpace — регистрация</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="auth-page">
+  <header class="auth-header">
+    <a class="logo" href="/register" aria-label="LibSpace">
+      <svg class="logo-icon" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+        <path d="M32 13C25 7 14 6 7 9v41c7-3 18-2 25 4 7-6 18-7 25-4V9c-7-3-18-2-25 4Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+        <path d="M32 13v41" fill="none" stroke="currentColor" stroke-width="2.2"/>
+        <path d="M32 4l3.2 5.2L32 14.4l-3.2-5.2L32 4Z" fill="currentColor"/>
+      </svg>
+    </a>
+    <a class="brand" href="/register">LibSpace</a>
+    <span class="auth-header-spacer" aria-hidden="true"></span>
+  </header>
+
+  <main class="auth-main">
+    <h1 class="auth-title">Регистрация</h1>
+
+    <form id="register-form" class="auth-panel" novalidate>
+      <div id="form-error" class="alert error hidden" role="alert"></div>
+
+      <label class="field" for="username">
+        <span class="sr-only">Логин</span>
+        <input id="username" name="username" type="text" placeholder="Логин" autocomplete="username" maxlength="50" required>
+      </label>
+
+      <label class="field" for="password">
+        <span class="sr-only">Пароль</span>
+        <input id="password" name="password" type="password" placeholder="Пароль" autocomplete="new-password" maxlength="72" required>
+      </label>
+
+      <label class="field" for="password-confirm">
+        <span class="sr-only">Повторите пароль</span>
+        <input id="password-confirm" name="password-confirm" type="password" placeholder="Повторить пароль" autocomplete="new-password" maxlength="72" required>
+      </label>
+
+      <label class="checkbox-field terms" for="terms">
+        <input id="terms" type="checkbox" required>
+        <span>Я принимаю условия <span class="link">клиентского соглашения</span> и <span class="link">политики конфиденциальности</span></span>
+      </label>
+
+      <p class="social-label">Зарегистрироваться с помощью:</p>
+      <div class="social-row" aria-hidden="true">
+        <span class="social-icon">VK</span>
+        <span class="social-icon social-icon-plane">➤</span>
+        <span class="social-icon">G</span>
+      </div>
+
+      <div class="auth-divider"></div>
+
+      <button class="btn btn-gold btn-block" id="submit-btn" type="submit">Зарегистрироваться</button>
+    </form>
+
+    <p class="auth-switch">Уже есть аккаунт? <a class="auth-link" href="/login">Войти</a></p>
+  </main>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/register.js"></script>
+</body>
+</html>
